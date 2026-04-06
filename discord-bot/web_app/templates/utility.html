@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}Utility Commands - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1><i class="fas fa-tools"></i> Utility Commands</h1>
+                <p class="lead">Help, information, and utility functions</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note about Discord Integration -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Note:</strong> Utility commands require Discord bot integration for actual functionality.
+                This interface provides a preview of available commands.
+            </div>
+        </div>
+    </div>
+
+    <!-- Help and Information -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-question-circle"></i> Help & Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="help_topic" class="form-label">Help Topic</label>
+                            <select name="help_topic" id="help_topic" class="form-select">
+                                <option value="general">General Help</option>
+                                <option value="guild">Guild Management</option>
+                                <option value="moderation">Moderation</option>
+                                <option value="export">Data Export</option>
+                                <option value="cleanup">Cleanup Operations</option>
+                            </select>
+                        </div>
+                        <button type="submit" name="get_help" class="btn btn-info">
+                            <i class="fas fa-question-circle"></i> Get Help
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bot Information -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-robot"></i> Bot Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <button type="submit" name="bot_info" class="btn btn-primary">
+                            <i class="fas fa-robot"></i> Get Bot Info
+                        </button>
+                    </form>
+                    <hr>
+                    <div class="text-muted">
+                        <p><strong>Bot Version:</strong> 1.0.0</p>
+                        <p><strong>Features:</strong> Guild Management, Moderation, Data Export</p>
+                        <p><strong>Supported Games:</strong> Free Fire</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ping and Status -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-signal"></i> Ping & Latency</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <button type="submit" name="ping" class="btn btn-success">
+                            <i class="fas fa-signal"></i> Check Ping
+                        </button>
+                    </form>
+                    <hr>
+                    <div class="text-muted">
+                        <p>Test bot responsiveness and latency</p>
+                        <p><strong>Command:</strong> <code>/ping</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Server Status -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-server"></i> Server Status</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <button type="submit" name="server_status" class="btn btn-warning">
+                            <i class="fas fa-server"></i> Check Status
+                        </button>
+                    </form>
+                    <hr>
+                    <div class="text-muted">
+                        <p>Get server and bot status information</p>
+                        <p><strong>Command:</strong> <code>/status</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Information -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user"></i> User Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="user_id" class="form-label">Discord User ID</label>
+                            <input type="text" name="user_id" id="user_id" class="form-control"
+                                   placeholder="Enter Discord User ID">
+                            <div class="form-text">Right-click user → Copy ID (requires Developer Mode)</div>
+                        </div>
+                        <button type="submit" name="user_info" class="btn btn-info">
+                            <i class="fas fa-user"></i> Get User Info
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Role Information -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-users-cog"></i> Role Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="role_user_id" class="form-label">Discord User ID</label>
+                            <input type="text" name="role_user_id" id="role_user_id" class="form-control"
+                                   placeholder="Enter Discord User ID">
+                            <div class="form-text">Check user's roles and permissions</div>
+                        </div>
+                        <button type="submit" name="role_info" class="btn btn-secondary">
+                            <i class="fas fa-users-cog"></i> Get Role Info
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-cogs"></i> System Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <button type="submit" name="system_info" class="btn btn-dark">
+                            <i class="fas fa-cogs"></i> Get System Info
+                        </button>
+                    </form>
+                    <hr>
+                    <div class="text-muted">
+                        <p>Get detailed system and environment information</p>
+                        <p><strong>Command:</strong> <code>/sysinfo</code></p>
+                        <p><strong>Requires:</strong> Administrator permissions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Commands List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-list"></i> All Available Commands</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        These commands are available through the Discord bot interface.
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-users"></i> Guild Management:</h6>
+                            <ul class="list-unstyled small">
+                                <li><code>/guildupdates</code> - Update guild data</li>
+                                <li><code>/currentmembers</code> - Show current members</li>
+                                <li><code>/editguild</code> - Edit guild information</li>
+                                <li><code>/guildhistory</code> - View guild history</li>
+                                <li><code>/resethistory</code> - Reset guild history</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-gavel"></i> Moderation:</h6>
+                            <ul class="list-unstyled small">
+                                <li><code>/warnuid</code> - Warn a player</li>
+                                <li><code>/warnings</code> - List warnings</li>
+                                <li><code>/listwarnings</code> - List all warnings</li>
+                                <li><code>/banuid</code> - Ban a player</li>
+                                <li><code>/listbans</code> - List bans</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-tools"></i> Utilities:</h6>
+                            <ul class="list-unstyled small">
+                                <li><code>/help</code> - Get help</li>
+                                <li><code>/ping</code> - Check latency</li>
+                                <li><code>/status</code> - Server status</li>
+                                <li><code>/userinfo</code> - User information</li>
+                                <li><code>/roleinfo</code> - Role information</li>
+                                <li><code>/sysinfo</code> - System info</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-user-shield"></i> Commander Commands:</h6>
+                            <ul class="list-unstyled small">
+                                <li><code>/addcommander</code> - Add commander</li>
+                                <li><code>/removecommander</code> - Remove commander</li>
+                                <li><code>/listcommanders</code> - List commanders</li>
+                                <li><code>/addheadcommander</code> - Add head commander</li>
+                                <li><code>/removeheadcommander</code> - Remove head commander</li>
+                                <li><code>/listheadcommanders</code> - List head commanders</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-hashtag"></i> Channel Commands:</h6>
+                            <ul class="list-unstyled small">
+                                <li><code>/setupchannel</code> - Setup channel</li>
+                                <li><code>/channelinfo</code> - Channel information</li>
+                                <li><code>/listchannels</code> - List channels</li>
+                                <li><code>/setchannelpermissions</code> - Set permissions</li>
+                                <li><code>/lockchannel</code> - Lock channel</li>
+                                <li><code>/unlockchannel</code> - Unlock channel</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-broom"></i> Cleanup Commands:</h6>
+                            <ul class="list-unstyled small">
+                                <li><code>/clearguild</code> - Clear guild data</li>
+                                <li><code>/clearwarnings</code> - Clear warnings</li>
+                                <li><code>/clearbans</code> - Clear bans</li>
+                                <li><code>/clearhistory</code> - Clear history</li>
+                                <li><code>/clearallguilds</code> - Clear all guilds</li>
+                                <li><code>/clearallwarnings</code> - Clear all warnings</li>
+                                <li><code>/clearallbans</code> - Clear all bans</li>
+                                <li><code>/clearallhistory</code> - Clear all history</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-download"></i> Export Commands:</h6>
+                            <ul class="list-unstyled small">
+                                <li><code>/export</code> - Export guild data</li>
+                                <li><code>/exportall</code> - Export all data</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add form validation for user ID inputs
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        const userInputs = form.querySelectorAll('input[name*="user_id"]');
+        let valid = true;
+
+        userInputs.forEach(input => {
+            if (input.value.trim() !== '' && !/^\d+$/.test(input.value.trim())) {
+                input.classList.add('is-invalid');
+                valid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        if (!valid) {
+            e.preventDefault();
+            alert('Please enter a valid Discord User ID (numbers only).');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}Guild Management - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <h1>
+        <i class="fas fa-users me-3"></i>
+        Guild Management
+    </h1>
+    <p class="lead mb-0">Update your guild members, track changes, and export guild data with comprehensive member management tools.</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>
+                    Update Guild Members
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('update_guild') }}">
+                    <div class="mb-4">
+                        <label for="channel_id" class="form-label fw-bold">
+                            <i class="fas fa-hashtag me-2"></i>Channel ID
+                        </label>
+                        <input type="text" class="form-control form-control-lg" id="channel_id" name="channel_id"
+                               value="default" placeholder="Enter channel ID or use 'default'">
+                        <div class="form-text">Use 'default' for testing or enter a specific Discord channel ID.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="guild_data" class="form-label fw-bold">
+                            <i class="fas fa-users me-2"></i>Guild Member Data
+                        </label>
+                        <textarea class="form-control" id="guild_data" name="guild_data" rows="12"
+                                  placeholder="Enter guild members, one per line:
+PlayerName1,123456789
+PlayerName2,987654321
+PlayerName3,111111111
+
+Format: PlayerName,UID (one per line)" oninput="updateCharCount()"></textarea>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Format: PlayerName,UID (one per line). The system will automatically detect changes and track history.
+                            </div>
+                            <small class="text-muted" id="charCount">0 characters</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Update Guild
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">
+                            <i class="fas fa-eraser me-2"></i>Clear Form
+                        </button>
+                        <button type="button" class="btn btn-outline-info" onclick="loadSampleData()">
+                            <i class="fas fa-magic me-2"></i>Load Sample
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4 fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-download me-2"></i>
+                    Export Data
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <label for="export_channel" class="form-label fw-bold">
+                        <i class="fas fa-hashtag me-2"></i>Channel ID
+                    </label>
+                    <input type="text" class="form-control" id="export_channel" value="default">
+                </div>
+
+                <div class="d-grid gap-3 mb-3">
+                    <button onclick="exportData('members', this)" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-users me-2"></i>Export Members
+                        <small class="d-block text-muted">Download current guild roster</small>
+                    </button>
+                    <button onclick="exportData('history', this)" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-history me-2"></i>Export History
+                        <small class="d-block text-muted">Download change history</small>
+                    </button>
+                </div>
+                <div class="d-grid gap-3">
+                    <button onclick="loadMembers()" class="btn btn-outline-success btn-lg">
+                        <i class="fas fa-users me-2"></i>Load Current Members
+                        <small class="d-block text-muted">Preview current roster</small>
+                    </button>
+                    <button onclick="loadHistory()" class="btn btn-outline-info btn-lg">
+                        <i class="fas fa-history me-2"></i>Load History
+                        <small class="d-block text-muted">Preview recent changes</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 fade-in" id="guildPreviewCard" style="display:none;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-eye me-2"></i>
+                    Guild Preview
+                </h5>
+            </div>
+            <div class="card-body" id="guildPreviewBody">
+                <p class="text-muted">Use the buttons above to preview guild members or history changes.</p>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    How It Works
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-sync-alt text-primary"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Automatic Detection</h6>
+                        <small class="text-muted">Detects joined/left members and name changes</small>
+                    </div>
+                </div>
+
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt text-warning"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Ban Checking</h6>
+                        <small class="text-muted">Automatically checks for globally banned players</small>
+                    </div>
+                </div>
+
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-history text-info"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">History Tracking</h6>
+                        <small class="text-muted">Saves all changes for detailed analysis</small>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-export text-success"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Data Export</h6>
+                        <small class="text-muted">Export data in CSV format for external use</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function exportData(type, button) {
+    const channelId = document.getElementById('export_channel').value;
+    const url = `{{ url_for('export_guild_data', data_type='PLACEHOLDER') }}`.replace('PLACEHOLDER', type) + `?channel_id=${encodeURIComponent(channelId)}`;
+
+    const btn = button || null;
+    const originalText = btn ? btn.innerHTML : null;
+    if (btn) {
+        btn.innerHTML = '<span class="loading-spinner me-2"></span>Exporting...';
+        btn.disabled = true;
+    }
+
+    // Start download
+    window.location.href = url;
+
+    // Reset button after a delay
+    if (btn) {
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }, 2000);
+    }
+}
+
+function clearForm() {
+    document.getElementById('guild_data').value = '';
+    document.getElementById('channel_id').value = 'default';
+    updateCharCount();
+    showAlert('Form cleared successfully!', 'info');
+}
+
+async function loadMembers() {
+    const channelId = document.getElementById('export_channel').value;
+
+    try {
+        const response = await fetch(`/api/guild_members?channel_id=${encodeURIComponent(channelId)}`);
+        const data = await response.json();
+
+        if (response.ok) {
+            renderGuildPreview(data, 'members');
+            showAlert('Current guild members loaded', 'success');
+        } else {
+            showAlert(data.error || 'Unable to load guild members', 'danger');
+        }
+    } catch (error) {
+        showAlert('Network error while loading guild members', 'danger');
+    }
+}
+
+async function loadHistory() {
+    const channelId = document.getElementById('export_channel').value;
+
+    try {
+        const response = await fetch(`/api/guild_history?channel_id=${encodeURIComponent(channelId)}`);
+        const data = await response.json();
+
+        if (response.ok) {
+            renderGuildPreview(data, 'history');
+            showAlert('Guild history loaded', 'success');
+        } else {
+            showAlert(data.error || 'Unable to load guild history', 'danger');
+        }
+    } catch (error) {
+        showAlert('Network error while loading guild history', 'danger');
+    }
+}
+
+function renderGuildPreview(data, type) {
+    const card = document.getElementById('guildPreviewCard');
+    const body = document.getElementById('guildPreviewBody');
+    card.style.display = 'block';
+
+    if (type === 'members') {
+        if (!data.members.length) {
+            body.innerHTML = '<p class="text-muted">No guild members found for this channel.</p>';
+            return;
+        }
+        body.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>UID</th>
+                            <th>Player Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.members.map(item => `
+                            <tr>
+                                <td>${item.uid}</td>
+                                <td>${item.name}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        return;
+    }
+
+    if (!data.history.length) {
+        body.innerHTML = '<p class="text-muted">No history entries found for this channel.</p>';
+        return;
+    }
+    body.innerHTML = `
+        <div class="timeline">
+            ${data.history.slice(0, 10).map(record => {
+                const joinedText = record.joined.length ? record.joined.map(item => `${item[0]} (${item[1]})`).join(', ') : 'None';
+                const leftText = record.left.length ? record.left.map(item => `${item[0]} (${item[1]})`).join(', ') : 'None';
+
+                return `
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-marker bg-primary"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <small class="text-muted">${record.timestamp}</small>
+                            </div>
+                            <p class="mb-1"><strong>Joined:</strong> ${joinedText}</p>
+                            <p class="mb-0"><strong>Left:</strong> ${leftText}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+function loadSampleData() {
+    const sampleData = `JohnDoe,123456789
+JaneSmith,987654321
+MikeJohnson,111111111
+SarahWilson,222222222
+DavidBrown,333333333
+LisaDavis,444444444
+ChrisMiller,555555555
+EmmaGarcia,666666666
+RyanMartinez,777777777
+AshleyRodriguez,888888888`;
+
+    document.getElementById('guild_data').value = sampleData;
+    updateCharCount();
+    showAlert('Sample data loaded! You can now modify it as needed.', 'success');
+}
+
+function updateCharCount() {
+    const textarea = document.getElementById('guild_data');
+    const counter = document.getElementById('charCount');
+    const count = textarea.value.length;
+    counter.textContent = count + ' character' + (count !== 1 ? 's' : '');
+
+    // Change color based on length
+    if (count > 1000) {
+        counter.className = 'text-danger fw-bold';
+    } else if (count > 500) {
+        counter.className = 'text-warning';
+    } else {
+        counter.className = 'text-muted';
+    }
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show fade-in`;
+    alertDiv.innerHTML = `
+        <i class="fas fa-info-circle me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    const container = document.querySelector('.main-content');
+    container.insertBefore(alertDiv, container.firstChild);
+
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
+// Initialize character count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCharCount();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+services:
+  - type: worker
+    name: discord-bot-worker
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python reconcile_bot.py
+    envVars:
+      - key: TOKEN
+      - key: MONGO_URI
+      - key: GUILD_ID

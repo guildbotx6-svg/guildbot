@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Warnings - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <h1>
+        <i class="fas fa-exclamation-triangle me-3"></i>
+        Warning Management
+    </h1>
+    <p class="lead mb-0">Issue warnings to players, track warning history, and manage disciplinary actions with detailed records.</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>
+                    Add Warnings
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('add_warning_route') }}">
+                    <div class="mb-4">
+                        <label for="warning_channel_id" class="form-label fw-bold">
+                            <i class="fas fa-hashtag me-2"></i>Channel ID
+                        </label>
+                        <input type="text" class="form-control form-control-lg" id="warning_channel_id" name="channel_id"
+                               value="default" placeholder="Enter channel ID or use 'default'">
+                        <div class="form-text">Use 'default' for testing or enter a specific Discord channel ID.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="warning_data" class="form-label fw-bold">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Warning Data
+                        </label>
+                        <textarea class="form-control" id="warning_data" name="warning_data" rows="10"
+                                  placeholder="Enter warnings, one per line:
+123456789,Spamming in chat
+987654321,Toxic behavior
+111111111,Cheating accusations
+
+Format: UID,Reason (one per line)"></textarea>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Format: UID,Reason (one per line). Each warning will be recorded with timestamp and reason.
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Add Warnings
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearWarningForm()">
+                            <i class="fas fa-eraser me-2"></i>Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4 fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-search me-2"></i>
+                    View Warnings
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <label for="view_channel" class="form-label fw-bold">
+                        <i class="fas fa-hashtag me-2"></i>Channel ID
+                    </label>
+                    <input type="text" class="form-control" id="view_channel" value="default">
+                </div>
+
+                <div class="mb-4">
+                    <label for="view_uid" class="form-label fw-bold">
+                        <i class="fas fa-user me-2"></i>Player UID
+                    </label>
+                    <input type="text" class="form-control" id="view_uid" placeholder="Enter UID to view warnings">
+                </div>
+
+                <div class="d-grid gap-3">
+                    <button onclick="viewWarnings()" class="btn btn-outline-warning btn-lg">
+                        <i class="fas fa-eye me-2"></i>View Player Warnings
+                        <small class="d-block text-muted">See specific player warnings</small>
+                    </button>
+                    <button onclick="listAllWarnings()" class="btn btn-outline-warning btn-lg">
+                        <i class="fas fa-list me-2"></i>List All Warned Players
+                        <small class="d-block text-muted">View all players with warnings</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 fade-in" id="warningResultsCard" style="display:none;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Warning Results
+                </h5>
+            </div>
+            <div class="card-body" id="warningResultsBody">
+                <p class="text-muted">Use the buttons above to load warning results.</p>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Warning System
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock text-warning"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Timestamp Tracking</h6>
+                        <small class="text-muted">All warnings recorded with date and time</small>
+                    </div>
+                </div>
+
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tag text-info"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Player Resolution</h6>
+                        <small class="text-muted">Player names resolved from guild data</small>
+                    </div>
+                </div>
+
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-export text-success"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Data Export</h6>
+                        <small class="text-muted">Export warning data in CSV format</small>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt text-danger"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Disciplinary Actions</h6>
+                        <small class="text-muted">Track warnings leading to bans</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function viewWarnings() {
+    const channelId = document.getElementById('view_channel').value;
+    const uid = document.getElementById('view_uid').value;
+
+    if (!uid) {
+        showAlert('Please enter a UID to view warnings', 'warning');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/warnings?channel_id=${encodeURIComponent(channelId)}&uid=${encodeURIComponent(uid)}`);
+        const data = await response.json();
+
+        if (response.ok) {
+            renderWarningResults(data);
+            showAlert(`Loaded warnings for UID ${uid}`, 'success');
+        } else {
+            showAlert(data.error || 'Unable to load warnings', 'danger');
+        }
+    } catch (error) {
+        showAlert('Network error while fetching warnings', 'danger');
+    }
+}
+
+async function listAllWarnings() {
+    const channelId = document.getElementById('view_channel').value;
+
+    try {
+        const response = await fetch(`/api/warnings/list?channel_id=${encodeURIComponent(channelId)}`);
+        const data = await response.json();
+
+        if (response.ok) {
+            renderWarningResults(data, true);
+            showAlert('Loaded all warned players', 'success');
+        } else {
+            showAlert(data.error || 'Unable to load warning list', 'danger');
+        }
+    } catch (error) {
+        showAlert('Network error while fetching warning list', 'danger');
+    }
+}
+
+function renderWarningResults(data, listMode = false) {
+    const card = document.getElementById('warningResultsCard');
+    const body = document.getElementById('warningResultsBody');
+    card.style.display = 'block';
+
+    if (listMode) {
+        if (!data.warned_members.length) {
+            body.innerHTML = '<p class="text-muted">No warned players found for this channel.</p>';
+            return;
+        }
+
+        body.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>UID</th>
+                            <th>Player Name</th>
+                            <th>Warnings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.warned_members.map(member => `
+                            <tr>
+                                <td>${member.uid}</td>
+                                <td>${member.player_name || 'Unknown'}</td>
+                                <td>${member.count}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        return;
+    }
+
+    if (!data.warnings.length) {
+        body.innerHTML = '<p class="text-muted">No warnings found for this UID.</p>';
+        return;
+    }
+
+    body.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Warned By</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.warnings.map(item => `
+                        <tr>
+                            <td>${item.timestamp}</td>
+                            <td>${item.warned_by || 'Unknown'}</td>
+                            <td>${item.reason}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+function clearWarningForm() {
+    document.getElementById('warning_data').value = '';
+    document.getElementById('warning_channel_id').value = 'default';
+    showAlert('Warning form cleared successfully!', 'info');
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show fade-in`;
+    alertDiv.innerHTML = `
+        <i class="fas fa-info-circle me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    const container = document.querySelector('.main-content');
+    container.insertBefore(alertDiv, container.firstChild);
+
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

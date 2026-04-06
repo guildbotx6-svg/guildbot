@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+
+{% block title %}Help & Documentation - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1><i class="fas fa-question-circle"></i> Help & Documentation</h1>
+                <p class="lead">Complete guide to using the Free Fire Guild Manager</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-rocket"></i> Quick Start Guide</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>1. Setup Your Guild Channel</h6>
+                            <p>Use <code>/setupchannel #your-channel</code> to initialize a channel for guild management.</p>
+
+                            <h6>2. Add Guild Members</h6>
+                            <p>Use <code>/guildupdates</code> to open the modal and paste your guild member list.</p>
+
+                            <h6>3. Manage Your Guild</h6>
+                            <p>Use commands like <code>/currentmembers</code>, <code>/editguild</code>, and <code>/guildhistory</code>.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>4. Moderate Players</h6>
+                            <p>Use <code>/warnuid</code> and <code>/banuid</code> for player moderation.</p>
+
+                            <h6>5. Export Data</h6>
+                            <p>Use <code>/export</code> or <code>/exportall</code> to download guild data.</p>
+
+                            <h6>6. Access Web Interface</h6>
+                            <p>Visit the web interface for visual data management and analysis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Command Categories -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-terminal"></i> Command Categories</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="commandAccordion">
+                        <!-- Guild Management -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#guild">
+                                    <i class="fas fa-users"></i> Guild Management
+                                </button>
+                            </h2>
+                            <div id="guild" class="accordion-collapse collapse show" data-bs-parent="#commandAccordion">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Basic Commands:</h6>
+                                            <ul>
+                                                <li><code>/guildupdates</code> - Update guild member list</li>
+                                                <li><code>/currentmembers</code> - Display current members</li>
+                                                <li><code>/editguild</code> - Edit guild information</li>
+                                                <li><code>/guildhistory</code> - View guild history</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Advanced Commands:</h6>
+                                            <ul>
+                                                <li><code>/resethistory</code> - Reset guild history</li>
+                                                <li><code>/export</code> - Export guild data</li>
+                                                <li><code>/exportall</code> - Export all guild data</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Moderation -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#moderation">
+                                    <i class="fas fa-gavel"></i> Moderation
+                                </button>
+                            </h2>
+                            <div id="moderation" class="accordion-collapse collapse" data-bs-parent="#commandAccordion">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Warning System:</h6>
+                                            <ul>
+                                                <li><code>/warnuid &lt;uid&gt; &lt;reason&gt;</code> - Warn a player</li>
+                                                <li><code>/warnings &lt;uid&gt;</code> - View player warnings</li>
+                                                <li><code>/listwarnings</code> - List all warnings</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Ban System:</h6>
+                                            <ul>
+                                                <li><code>/banuid &lt;uid&gt; &lt;reason&gt;</code> - Ban a player</li>
+                                                <li><code>/listbans</code> - List all bans</li>
+                                                <li><strong>Global Bans:</strong> Bans apply across all channels</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Commander Management -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#commanders">
+                                    <i class="fas fa-user-shield"></i> Commander Management
+                                </button>
+                            </h2>
+                            <div id="commanders" class="accordion-collapse collapse" data-bs-parent="#commandAccordion">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Commander Commands:</h6>
+                                            <ul>
+                                                <li><code>/addcommander @user</code> - Grant commander role</li>
+                                                <li><code>/removecommander @user</code> - Remove commander role</li>
+                                                <li><code>/listcommanders</code> - List all commanders</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Head Commander Commands:</h6>
+                                            <ul>
+                                                <li><code>/addheadcommander @user</code> - Grant head commander (Admin only)</li>
+                                                <li><code>/removeheadcommander @user</code> - Remove head commander (Admin only)</li>
+                                                <li><code>/listheadcommanders</code> - List head commanders</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Channel Management -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#channels">
+                                    <i class="fas fa-hashtag"></i> Channel Management
+                                </button>
+                            </h2>
+                            <div id="channels" class="accordion-collapse collapse" data-bs-parent="#commandAccordion">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Setup Commands:</h6>
+                                            <ul>
+                                                <li><code>/setupchannel #channel</code> - Setup guild channel</li>
+                                                <li><code>/channelinfo #channel</code> - Get channel info</li>
+                                                <li><code>/listchannels</code> - List all guild channels</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Permission Commands:</h6>
+                                            <ul>
+                                                <li><code>/setchannelpermissions #channel</code> - Set permissions</li>
+                                                <li><code>/lockchannel #channel</code> - Lock channel</li>
+                                                <li><code>/unlockchannel #channel</code> - Unlock channel</li>
+                                                <li><code>/archivechannel #channel</code> - Archive channel</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cleanup Operations -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cleanup">
+                                    <i class="fas fa-broom"></i> Cleanup Operations
+                                </button>
+                            </h2>
+                            <div id="cleanup" class="accordion-collapse collapse" data-bs-parent="#commandAccordion">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Data Cleanup:</h6>
+                                            <ul>
+                                                <li><code>/clearguild #channel</code> - Clear guild data</li>
+                                                <li><code>/clearwarnings #channel [uid]</code> - Clear warnings</li>
+                                                <li><code>/clearbans #channel [uid]</code> - Clear bans</li>
+                                                <li><code>/clearhistory #channel</code> - Clear history</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Bulk Cleanup:</h6>
+                                            <ul>
+                                                <li><code>/clearallguilds</code> - Clear all guild data</li>
+                                                <li><code>/clearallwarnings</code> - Clear all warnings</li>
+                                                <li><code>/clearallbans</code> - Clear all bans</li>
+                                                <li><code>/clearallhistory</code> - Clear all history</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Utility Commands -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#utilities">
+                                    <i class="fas fa-tools"></i> Utility Commands
+                                </button>
+                            </h2>
+                            <div id="utilities" class="accordion-collapse collapse" data-bs-parent="#commandAccordion">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Information:</h6>
+                                            <ul>
+                                                <li><code>/help [topic]</code> - Get help</li>
+                                                <li><code>/ping</code> - Check bot latency</li>
+                                                <li><code>/status</code> - Server status</li>
+                                                <li><code>/userinfo @user</code> - User information</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>System:</h6>
+                                            <ul>
+                                                <li><code>/roleinfo @user</code> - Role information</li>
+                                                <li><code>/sysinfo</code> - System information (Admin only)</li>
+                                                <li><code>/botinfo</code> - Bot information</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Formats -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-file-alt"></i> Data Formats</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Guild Member List Format:</h6>
+                    <p>When using <code>/guildupdates</code>, paste member data in this format:</p>
+                    <div class="bg-light p-3 rounded">
+                        <pre><code>Player Name 1 - UID: 1234567890
+Player Name 2 - UID: 1234567891
+Player Name 3 - UID: 1234567892</code></pre>
+                    </div>
+                    <p class="text-muted">Each line should contain: Player Name - UID: PlayerUID</p>
+
+                    <hr>
+                    <h6>Bound List Format:</h6>
+                    <p>For bound member lists, use the same format as guild members.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Permissions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-shield-alt"></i> Permissions & Roles</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Role Hierarchy:</h6>
+                            <ul>
+                                <li><strong>Everyone:</strong> Basic commands (help, ping, status)</li>
+                                <li><strong>Commander:</strong> Guild management, moderation</li>
+                                <li><strong>Head Commander:</strong> All commands except admin functions</li>
+                                <li><strong>Administrator:</strong> Full access including system commands</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Channel-Scoped Data:</h6>
+                            <ul>
+                                <li>Each Discord channel has separate guild data</li>
+                                <li>Warnings and bans are channel-specific</li>
+                                <li>Global bans apply across all channels</li>
+                                <li>Commander roles are server-wide</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-wrench"></i> Troubleshooting</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="troubleshootingAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#common">
+                                    Common Issues
+                                </button>
+                            </h2>
+                            <div id="common" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li><strong>Bot not responding:</strong> Check if bot is online and has proper permissions</li>
+                                        <li><strong>Commands not working:</strong> Ensure you have the required role</li>
+                                        <li><strong>Modal errors:</strong> Check message length (max 2000 characters)</li>
+                                        <li><strong>Data not saving:</strong> Verify database connection and permissions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#data">
+                                    Data Issues
+                                </button>
+                            </h2>
+                            <div id="data" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li><strong>Invalid UID format:</strong> UIDs must be numeric</li>
+                                        <li><strong>Duplicate entries:</strong> System prevents duplicate UIDs</li>
+                                        <li><strong>Missing data:</strong> Check if channel is properly set up</li>
+                                        <li><strong>Export failures:</strong> Ensure bot has file upload permissions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#permissions">
+                                    Permission Issues
+                                </button>
+                            </h2>
+                            <div id="permissions" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li><strong>Access denied:</strong> Check your server roles</li>
+                                        <li><strong>Channel permissions:</strong> Bot needs read/write permissions</li>
+                                        <li><strong>Role hierarchy:</strong> Higher roles can override lower ones</li>
+                                        <li><strong>Admin commands:</strong> Require server administrator role</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-life-ring"></i> Support & Contact</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Getting Help:</h6>
+                            <ul>
+                                <li>Use <code>/help</code> command in Discord</li>
+                                <li>Check this documentation</li>
+                                <li>Review command permissions</li>
+                                <li>Test with basic commands first</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Report Issues:</h6>
+                            <ul>
+                                <li>Include error messages</li>
+                                <li>Describe what you were doing</li>
+                                <li>Mention your server setup</li>
+                                <li>Check bot status with <code>/status</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add smooth scrolling for anchor links if needed
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

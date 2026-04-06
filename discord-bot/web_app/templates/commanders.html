@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Commander Management - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1><i class="fas fa-user-shield"></i> Commander Management</h1>
+                <p class="lead">Manage commander roles and permissions</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note about Discord Integration -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Note:</strong> Commander management requires Discord bot integration for actual role assignment.
+                This interface provides a preview of available commands.
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Commander -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user-plus"></i> Add Commander</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="add_user" class="form-label">Discord User ID</label>
+                            <input type="text" name="add_user" id="add_user" class="form-control"
+                                   placeholder="Enter Discord User ID">
+                            <div class="form-text">Right-click user → Copy ID (requires Developer Mode)</div>
+                        </div>
+                        <button type="submit" name="add_commander" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Grant Commander Role
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remove Commander -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user-minus"></i> Remove Commander</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="remove_user" class="form-label">Discord User ID</label>
+                            <input type="text" name="remove_user" id="remove_user" class="form-control"
+                                   placeholder="Enter Discord User ID">
+                            <div class="form-text">Right-click user → Copy ID (requires Developer Mode)</div>
+                        </div>
+                        <button type="submit" name="remove_commander" class="btn btn-danger">
+                            <i class="fas fa-minus"></i> Remove Commander Role
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commander List -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-list"></i> Current Commanders</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Commander list requires Discord bot integration to display actual users with the Commander role.
+                    </div>
+                    <p class="text-muted">This feature is available through the Discord bot commands:</p>
+                    <ul class="list-unstyled">
+                        <li><code>/addcommander @user</code> - Grant commander role</li>
+                        <li><code>/removecommander @user</code> - Remove commander role</li>
+                        <li><code>/listcommanders</code> - List all commanders</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Head Commander Management -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-crown"></i> Add Head Commander</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="add_head_user" class="form-label">Discord User ID</label>
+                            <input type="text" name="add_head_user" id="add_head_user" class="form-control"
+                                   placeholder="Enter Discord User ID">
+                            <div class="form-text">Requires Administrator permissions</div>
+                        </div>
+                        <button type="submit" name="add_head_commander" class="btn btn-warning">
+                            <i class="fas fa-crown"></i> Grant Head Commander Role
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user-times"></i> Remove Head Commander</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="remove_head_user" class="form-label">Discord User ID</label>
+                            <input type="text" name="remove_head_user" id="remove_head_user" class="form-control"
+                                   placeholder="Enter Discord User ID">
+                            <div class="form-text">Requires Administrator permissions</div>
+                        </div>
+                        <button type="submit" name="remove_head_commander" class="btn btn-warning">
+                            <i class="fas fa-user-times"></i> Remove Head Commander Role
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Head Commander List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-crown"></i> Current Head Commanders</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Head Commander list requires Discord bot integration to display actual users with the Head Commander role.
+                    </div>
+                    <p class="text-muted">This feature is available through the Discord bot commands:</p>
+                    <ul class="list-unstyled">
+                        <li><code>/addheadcommander @user</code> - Grant head commander role (Admin only)</li>
+                        <li><code>/removeheadcommander @user</code> - Remove head commander role (Admin only)</li>
+                        <li><code>/listheadcommanders</code> - List all head commanders</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add any client-side validation if needed
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        const inputs = form.querySelectorAll('input[type="text"]');
+        let valid = true;
+
+        inputs.forEach(input => {
+            if (input.value.trim() === '') {
+                input.classList.add('is-invalid');
+                valid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        if (!valid) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Logs - Quick Base Admin Console{% endblock %}
+
+{% block content %}
+<div class="page-header page-header-alt fade-in">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-4 align-items-start">
+        <div>
+            <span class="badge-soft mb-3 d-inline-flex align-items-center">
+                <i class="fas fa-cubes"></i>
+                Audit Console
+            </span>
+            <h1 class="mb-2">
+                <i class="fas fa-clipboard-list me-3"></i>
+                Audit Logs
+            </h1>
+            <p class="lead mb-0 text-secondary">Track activity across warnings, bans, and guild updates with a full search and filter console.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-home me-2"></i>Dashboard
+            </a>
+            <a href="{{ url_for('logs_page', channel_id=channel_id, start_date=start_date, end_date=end_date, action=action_filter, app=app_filter, email=email_filter) }}" class="btn btn-primary">
+                <i class="fas fa-sync-alt me-2"></i>Refresh
+            </a>
+        </div>
+    </div>
+
+    <div class="app-tabs">
+        <a class="app-tab active">Quick Base</a>
+        <a class="app-tab" href="{{ url_for('guild_management') }}">Guild Management</a>
+        <a class="app-tab" href="{{ url_for('warnings_page') }}">Warnings</a>
+        <a class="app-tab" href="{{ url_for('bans_page') }}">Bans</a>
+    </div>
+</div>
+
+<div class="filter-panel mb-4 fade-in">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-12 col-lg-2">
+            <label class="form-label fw-semibold">App</label>
+            <select class="form-select" name="app">
+                <option value="all" {% if app_filter == 'all' %}selected{% endif %}>All apps</option>
+                <option value="quickbase" {% if app_filter == 'quickbase' %}selected{% endif %}>Quick Base</option>
+                <option value="guild" {% if app_filter == 'guild' %}selected{% endif %}>Guild Manager</option>
+                <option value="warnings" {% if app_filter == 'warnings' %}selected{% endif %}>Warnings</option>
+            </select>
+        </div>
+        <div class="col-12 col-lg-2">
+            <label class="form-label fw-semibold">Log Type</label>
+            <select class="form-select" name="action">
+                <option value="all" {% if action_filter == 'all' %}selected{% endif %}>All logs</option>
+                <option value="Warning" {% if action_filter == 'Warning' %}selected{% endif %}>Warnings</option>
+                <option value="Ban" {% if action_filter == 'Ban' %}selected{% endif %}>Bans</option>
+                <option value="Guild Update" {% if action_filter == 'Guild Update' %}selected{% endif %}>Guild Updates</option>
+                <option value="Global Ban" {% if action_filter == 'Global Ban' %}selected{% endif %}>Global Bans</option>
+            </select>
+        </div>
+        <div class="col-12 col-lg-2">
+            <label class="form-label fw-semibold">Channel ID</label>
+            <input type="text" class="form-control" name="channel_id" value="{{ channel_id }}" placeholder="default or channel ID">
+        </div>
+        <div class="col-6 col-lg-2">
+            <label class="form-label fw-semibold">Start date</label>
+            <input type="date" class="form-control" name="start_date" value="{{ start_date }}">
+        </div>
+        <div class="col-6 col-lg-2">
+            <label class="form-label fw-semibold">End date</label>
+            <input type="date" class="form-control" name="end_date" value="{{ end_date }}">
+        </div>
+        <div class="col-12 col-lg-2">
+            <label class="form-label fw-semibold">Search</label>
+            <input type="text" class="form-control" name="email" value="{{ email_filter }}" placeholder="Email, user, log ID">
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-filter me-2"></i>Display Logs
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stats-card light-card">
+            <div class="icon bg-primary"><i class="fas fa-list"></i></div>
+            <div class="number">{{ total_logs }}</div>
+            <div class="label">Total Entries</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stats-card light-card">
+            <div class="icon bg-warning"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="number">{{ warning_count }}</div>
+            <div class="label">Warnings</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stats-card light-card">
+            <div class="icon bg-danger"><i class="fas fa-ban"></i></div>
+            <div class="number">{{ ban_count }}</div>
+            <div class="label">Bans</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stats-card light-card">
+            <div class="icon bg-success"><i class="fas fa-history"></i></div>
+            <div class="number">{{ guild_count }}</div>
+            <div class="label">Guild Events</div>
+        </div>
+    </div>
+</div>
+
+<div class="table-card fade-in">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+            <div>
+                <h5 class="mb-1">Audit Log Results</h5>
+                <p class="mb-0 text-muted">Showing the latest {{ total_logs }} entries for your selected filters.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-outline-secondary" href="{{ url_for('logs_page', action='all', channel_id=channel_id, start_date=start_date, end_date=end_date, app=app_filter, email=email_filter) }}">Reset Filter</a>
+                <button type="button" class="btn btn-outline-primary" onclick="window.location.reload()">Reload</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-borderless align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Log ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email Address</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Browser Time</th>
+                        <th scope="col">IP</th>
+                        <th scope="col">User Agent</th>
+                        <th scope="col">Application</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if logs %}
+                        {% for log in logs %}
+                            <tr>
+                                <td class="text-muted">{{ log.id }}</td>
+                                <td>{{ log.first_name }}</td>
+                                <td>{{ log.last_name or '—' }}</td>
+                                <td>{{ log.email_address }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'warning' if log.action == 'Warning' else 'danger' if log.action in ['Ban', 'Global Ban'] else 'success' }}">
+                                        {{ log.action }}
+                                    </span>
+                                </td>
+                                <td>{{ log.browser_time }}</td>
+                                <td>{{ log.ip_address }}</td>
+                                <td>{{ log.user_agent }}</td>
+                                <td>{{ log.application }}</td>
+                                <td>{{ log.description }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-5">No logs found for the selected filter criteria.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

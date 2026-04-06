@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}Cleanup Operations - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1><i class="fas fa-broom"></i> Cleanup Operations</h1>
+                <p class="lead">Clean up guild data, warnings, and inactive members</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note about Discord Integration -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Note:</strong> Cleanup operations require Discord bot integration for actual data modification.
+                This interface provides a preview of available commands.
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear Guild Data -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-trash"></i> Clear Guild Data</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="clear_channel" class="form-label">Channel ID</label>
+                            <input type="text" name="clear_channel" id="clear_channel" class="form-control"
+                                   placeholder="Enter Discord Channel ID">
+                            <div class="form-text">Channel to clear guild data from</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirm_clear" name="confirm_clear">
+                                <label class="form-check-label" for="confirm_clear">
+                                    I understand this will permanently delete all guild data for this channel
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" name="clear_guild" class="btn btn-danger" disabled id="clear_btn">
+                            <i class="fas fa-trash"></i> Clear Guild Data
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clear Warnings -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Clear Warnings</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="clear_warn_channel" class="form-label">Channel ID</label>
+                            <input type="text" name="clear_warn_channel" id="clear_warn_channel" class="form-control"
+                                   placeholder="Enter Discord Channel ID">
+                            <div class="form-text">Channel to clear warnings from</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="clear_warn_uid" class="form-label">Player UID (Optional)</label>
+                            <input type="text" name="clear_warn_uid" id="clear_warn_uid" class="form-control"
+                                   placeholder="Leave empty to clear all warnings">
+                            <div class="form-text">Specific UID to clear warnings for, or leave empty for all</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirm_clear_warn" name="confirm_clear_warn">
+                                <label class="form-check-label" for="confirm_clear_warn">
+                                    I understand this will permanently delete warning data
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" name="clear_warnings" class="btn btn-warning" disabled id="clear_warn_btn">
+                            <i class="fas fa-exclamation-triangle"></i> Clear Warnings
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear Bans -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-ban"></i> Clear Bans</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="clear_ban_channel" class="form-label">Channel ID</label>
+                            <input type="text" name="clear_ban_channel" id="clear_ban_channel" class="form-control"
+                                   placeholder="Enter Discord Channel ID">
+                            <div class="form-text">Channel to clear bans from</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="clear_ban_uid" class="form-label">Player UID (Optional)</label>
+                            <input type="text" name="clear_ban_uid" id="clear_ban_uid" class="form-control"
+                                   placeholder="Leave empty to clear all bans">
+                            <div class="form-text">Specific UID to clear bans for, or leave empty for all</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirm_clear_ban" name="confirm_clear_ban">
+                                <label class="form-check-label" for="confirm_clear_ban">
+                                    I understand this will permanently delete ban data
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" name="clear_bans" class="btn btn-danger" disabled id="clear_ban_btn">
+                            <i class="fas fa-ban"></i> Clear Bans
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clear History -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-history"></i> Clear History</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="clear_hist_channel" class="form-label">Channel ID</label>
+                            <input type="text" name="clear_hist_channel" id="clear_hist_channel" class="form-control"
+                                   placeholder="Enter Discord Channel ID">
+                            <div class="form-text">Channel to clear history from</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirm_clear_hist" name="confirm_clear_hist">
+                                <label class="form-check-label" for="confirm_clear_hist">
+                                    I understand this will permanently delete all history data
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" name="clear_history" class="btn btn-warning" disabled id="clear_hist_btn">
+                            <i class="fas fa-history"></i> Clear History
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Cleanup -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-broom"></i> Bulk Cleanup Operations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Warning:</strong> These operations will affect all channels and cannot be undone.
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form method="POST" class="mb-3">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="confirm_bulk_clear" name="confirm_bulk_clear">
+                                        <label class="form-check-label" for="confirm_bulk_clear">
+                                            I understand this will clear ALL guild data across ALL channels
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" name="bulk_clear_guild" class="btn btn-danger btn-lg" disabled id="bulk_clear_btn">
+                                    <i class="fas fa-trash"></i> Clear All Guild Data
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form method="POST" class="mb-3">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="confirm_bulk_cleanup" name="confirm_bulk_cleanup">
+                                        <label class="form-check-label" for="confirm_bulk_cleanup">
+                                            I understand this will clear ALL data (guild, warnings, bans, history)
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" name="bulk_cleanup" class="btn btn-danger btn-lg" disabled id="bulk_cleanup_btn">
+                                    <i class="fas fa-broom"></i> Complete Cleanup
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Commands -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-terminal"></i> Available Cleanup Commands</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">These commands are available through the Discord bot:</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Guild Data:</h6>
+                            <ul class="list-unstyled">
+                                <li><code>/clearguild #channel</code> - Clear guild data</li>
+                                <li><code>/clearallguilds</code> - Clear all guild data</li>
+                            </ul>
+                            <h6>Warnings:</h6>
+                            <ul class="list-unstyled">
+                                <li><code>/clearwarnings #channel [uid]</code> - Clear warnings</li>
+                                <li><code>/clearallwarnings</code> - Clear all warnings</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Bans:</h6>
+                            <ul class="list-unstyled">
+                                <li><code>/clearbans #channel [uid]</code> - Clear bans</li>
+                                <li><code>/clearallbans</code> - Clear all bans</li>
+                            </ul>
+                            <h6>History:</h6>
+                            <ul class="list-unstyled">
+                                <li><code>/clearhistory #channel</code> - Clear history</li>
+                                <li><code>/clearallhistory</code> - Clear all history</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Enable/disable buttons based on confirmation checkboxes
+function toggleButton(checkboxId, buttonId) {
+    const checkbox = document.getElementById(checkboxId);
+    const button = document.getElementById(buttonId);
+
+    checkbox.addEventListener('change', function() {
+        button.disabled = !this.checked;
+    });
+}
+
+// Setup all confirmation toggles
+toggleButton('confirm_clear', 'clear_btn');
+toggleButton('confirm_clear_warn', 'clear_warn_btn');
+toggleButton('confirm_clear_ban', 'clear_ban_btn');
+toggleButton('confirm_clear_hist', 'clear_hist_btn');
+toggleButton('confirm_bulk_clear', 'bulk_clear_btn');
+toggleButton('confirm_bulk_cleanup', 'bulk_cleanup_btn');
+
+// Add form validation
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        const channelInputs = form.querySelectorAll('input[name*="channel"]');
+        let valid = true;
+
+        channelInputs.forEach(input => {
+            if (input.value.trim() === '') {
+                input.classList.add('is-invalid');
+                valid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        if (!valid) {
+            e.preventDefault();
+            alert('Please enter a valid Channel ID.');
+        }
+    });
+});
+</script>
+{% endblock %}

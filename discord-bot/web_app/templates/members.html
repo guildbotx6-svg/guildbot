@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}Member Management - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1><i class="fas fa-users"></i> Member Management</h1>
+                <p class="lead">Manage guild and bound member lists</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel Selection -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-hashtag"></i> Channel Selection</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" class="d-inline">
+                        <div class="input-group">
+                            <input type="text" name="channel_id" value="{{ channel_id }}" class="form-control" placeholder="Enter channel ID">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Switch Channel
+                            </button>
+                        </div>
+                    </form>
+                    <small class="text-muted ms-2">Current channel: <strong>{{ channel_id }}</strong></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set Guild Data -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-crown"></i> Set Guild List</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="guild_data" class="form-label">Guild Member Data</label>
+                            <textarea name="guild_data" id="guild_data" rows="8" class="form-control"
+                                    placeholder="Enter guild members, one per line:
+PlayerName,UID
+Example:
+JohnDoe,123456789
+JaneSmith,987654321"></textarea>
+                            <div class="form-text">Format: PlayerName,UID (one per line)</div>
+                        </div>
+                        <button type="submit" name="set_guild" class="btn btn-success">
+                            <i class="fas fa-save"></i> Update Guild List
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Set Bound Data -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-link"></i> Set Bound List</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="bound_data" class="form-label">Bound Member Data</label>
+                            <textarea name="bound_data" id="bound_data" rows="8" class="form-control"
+                                    placeholder="Enter bound members, one per line:
+PlayerName,UID
+Example:
+JohnDoe,123456789
+JaneSmith,987654321"></textarea>
+                            <div class="form-text">Format: PlayerName,UID (one per line)</div>
+                        </div>
+                        <button type="submit" name="set_bound" class="btn btn-info">
+                            <i class="fas fa-save"></i> Update Bound List
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Data Display -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-crown"></i> Current Guild List ({{ guild_data|length }} members)</h5>
+                </div>
+                <div class="card-body">
+                    {% if guild_data %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>UID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for uid, name in guild_data.items() %}
+                                    <tr>
+                                        <td>{{ name }}</td>
+                                        <td>{{ uid }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No guild data set yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-link"></i> Current Bound List ({{ bound_data|length }} members)</h5>
+                </div>
+                <div class="card-body">
+                    {% if bound_data %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>UID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for uid, name in bound_data.items() %}
+                                    <tr>
+                                        <td>{{ name }}</td>
+                                        <td>{{ uid }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No bound data set yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user-minus"></i> Guild Members Not Bound ({{ guild_only|length }})</h5>
+                </div>
+                <div class="card-body">
+                    {% if guild_only %}
+                        <div class="table-responsive">
+                            <table class="table table-warning">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>UID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for uid, name in guild_only.items() %}
+                                    <tr>
+                                        <td>{{ name }}</td>
+                                        <td>{{ uid }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/members/export/guild_only/{{ channel_id }}" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-download"></i> Export as CSV
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-success">All guild members are bound! ✅</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user-times"></i> Bound Members Not in Guild ({{ bound_only|length }})</h5>
+                </div>
+                <div class="card-body">
+                    {% if bound_only %}
+                        <div class="table-responsive">
+                            <table class="table table-danger">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>UID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for uid, name in bound_only.items() %}
+                                    <tr>
+                                        <td>{{ name }}</td>
+                                        <td>{{ uid }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/members/export/bound_only/{{ channel_id }}" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-download"></i> Export as CSV
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-success">All bound members are in the guild! ✅</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-cogs"></i> Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <form method="POST" class="d-inline">
+                                <button type="submit" name="clear_data" class="btn btn-danger"
+                                        onclick="return confirm('Are you sure you want to clear all member data?')">
+                                    <i class="fas fa-trash"></i> Clear All Data
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Guild Count:</strong> {{ guild_data|length }} members
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Bound Count:</strong> {{ bound_data|length }} members
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Total Unique:</strong> {{ total_unique }} members
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Character counter for textareas
+document.getElementById('guild_data').addEventListener('input', function() {
+    // Could add character counting here if needed
+});
+
+document.getElementById('bound_data').addEventListener('input', function() {
+    // Could add character counting here if needed
+});
+</script>
+{% endblock %}

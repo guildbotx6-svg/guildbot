@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+
+{% block title %}Bans - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <h1>
+        <i class="fas fa-ban me-3"></i>
+        Ban Management
+    </h1>
+    <p class="lead mb-0">Manage player bans, maintain ban lists, and enforce disciplinary actions with comprehensive tracking.</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>
+                    Add Bans
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('add_ban_route') }}">
+                    <div class="mb-4">
+                        <label for="ban_channel_id" class="form-label fw-bold">
+                            <i class="fas fa-hashtag me-2"></i>Channel ID
+                        </label>
+                        <input type="text" class="form-control form-control-lg" id="ban_channel_id" name="channel_id"
+                               value="default" placeholder="Enter channel ID or use 'default'">
+                        <div class="form-text">Use 'default' for testing or enter a specific Discord channel ID.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="ban_data" class="form-label fw-bold">
+                            <i class="fas fa-ban me-2"></i>Ban Data
+                        </label>
+                        <textarea class="form-control" id="ban_data" name="ban_data" rows="10"
+                                  placeholder="Enter bans, one per line:
+123456789,PlayerName,Reason for ban,+1234567890
+987654321,AnotherPlayer,Cheating,+0987654321
+111111111,BadPlayer,Toxic behavior,+1122334455
+
+Format: UID,PlayerName,Reason,WhatsApp (one per line)"></textarea>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Format: UID,PlayerName,Reason,WhatsApp (one per line). WhatsApp number is optional but recommended.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check form-check-lg">
+                            <input type="checkbox" class="form-check-input" id="global_ban" name="global_ban">
+                            <label class="form-check-label fw-bold" for="global_ban">
+                                <i class="fas fa-globe me-2"></i>
+                                Global Ban - Ban across all guilds (Bot Owner only)
+                            </label>
+                            <div class="form-text">Global bans apply to all servers and cannot be removed by regular administrators.</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-ban me-2"></i>Add Bans
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearBanForm()">
+                            <i class="fas fa-eraser me-2"></i>Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4 fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    View Bans
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <label for="ban_view_channel" class="form-label fw-bold">
+                        <i class="fas fa-hashtag me-2"></i>Channel ID
+                    </label>
+                    <input type="text" class="form-control" id="ban_view_channel" value="default">
+                </div>
+
+                <div class="mb-4">
+                    <label for="ban_type" class="form-label fw-bold">
+                        <i class="fas fa-filter me-2"></i>Ban Type
+                    </label>
+                    <select class="form-control form-select-lg" id="ban_type">
+                        <option value="channel">Channel Bans</option>
+                        <option value="global">Global Bans</option>
+                    </select>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <button onclick="listBans()" class="btn btn-outline-danger btn-lg">
+                        <i class="fas fa-list me-2"></i>List Bans
+                        <small class="d-block text-muted">View all banned players</small>
+                    </button>
+                    <button onclick="checkBan()" class="btn btn-outline-info btn-lg" data-bs-toggle="modal" data-bs-target="#checkBanModal">
+                        <i class="fas fa-search me-2"></i>Check Ban Status
+                        <small class="d-block text-muted">Check if player is banned</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 fade-in" id="banResultsCard" style="display:none;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Ban Results
+                </h5>
+            </div>
+            <div class="card-body" id="banResultsBody">
+                <p class="text-muted">Use the buttons above to fetch ban data.</p>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Ban System
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-hashtag text-primary"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Channel Bans</h6>
+                        <small class="text-muted">Bans specific to individual channels</small>
+                    </div>
+                </div>
+
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe text-danger"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Global Bans</h6>
+                        <small class="text-muted">Universal bans across all guilds</small>
+                    </div>
+                </div>
+
+                <div class="feature-item mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot text-info"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Auto-Detection</h6>
+                        <small class="text-muted">Guild updates check for banned players</small>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-phone text-success"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6 class="mb-1">Contact Tracking</h6>
+                        <small class="text-muted">WhatsApp numbers for follow-up</small>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Global bans require bot owner permissions.</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Check Ban Modal -->
+<div class="modal fade" id="checkBanModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-search me-2"></i>Check Ban Status
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <label for="check_uid" class="form-label fw-bold">
+                        <i class="fas fa-user me-2"></i>Player UID
+                    </label>
+                    <input type="text" class="form-control form-control-lg" id="check_uid" placeholder="Enter UID to check">
+                </div>
+                <div id="ban-status-result" class="alert fade-in" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="performBanCheck()">
+                    <i class="fas fa-search me-2"></i>Check
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function listBans() {
+    const channelId = document.getElementById('ban_view_channel').value;
+    const banType = document.getElementById('ban_type').value;
+    const isGlobal = banType === 'global';
+
+    try {
+        const response = await fetch(`/api/bans?channel_id=${encodeURIComponent(channelId)}&global=${isGlobal}`);
+        const data = await response.json();
+
+        if (response.ok) {
+            renderBanResults(data);
+            showAlert('Ban list loaded successfully', 'success');
+        } else {
+            showAlert(data.error || 'Unable to load bans', 'danger');
+        }
+    } catch (error) {
+        showAlert('Network error while loading bans', 'danger');
+    }
+}
+
+function checkBan() {
+    // Modal is shown via data-bs-toggle
+}
+
+function renderBanResults(data) {
+    const card = document.getElementById('banResultsCard');
+    const body = document.getElementById('banResultsBody');
+    card.style.display = 'block';
+
+    if (!data.bans.length) {
+        body.innerHTML = '<p class="text-muted">No bans found for this selection.</p>';
+        return;
+    }
+
+    body.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>UID</th>
+                        <th>Player Name</th>
+                        <th>Reason</th>
+                        <th>WhatsApp</th>
+                        <th>Banned By</th>
+                        ${data.global ? '<th>Source Guild</th>' : ''}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.bans.map(item => `
+                        <tr>
+                            <td>${item.uid}</td>
+                            <td>${item.player_name}</td>
+                            <td>${item.reason}</td>
+                            <td>${item.whatsapp || 'N/A'}</td>
+                            <td>${item.banned_by || 'Unknown'}</td>
+                            ${data.global ? `<td>${item.source_guild_id || 'N/A'}</td>` : ''}
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+async function performBanCheck() {
+    const uid = document.getElementById('check_uid').value;
+    const resultDiv = document.getElementById('ban-status-result');
+
+    if (!uid) {
+        resultDiv.className = 'alert alert-danger fade-in';
+        resultDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Please enter a UID';
+        resultDiv.style.display = 'block';
+        return;
+    }
+
+    // Show loading state
+    resultDiv.className = 'alert alert-info fade-in';
+    resultDiv.innerHTML = '<span class="loading-spinner me-2"></span>Checking ban status...';
+    resultDiv.style.display = 'block';
+
+    try {
+        const response = await fetch(`/check-ban/${uid}`);
+        const data = await response.json();
+
+        if (data.banned) {
+            resultDiv.className = 'alert alert-danger fade-in';
+            resultDiv.innerHTML = `<i class="fas fa-ban me-2"></i>UID <strong>${data.uid}</strong> is <strong>GLOBALLY BANNED</strong>`;
+        } else {
+            resultDiv.className = 'alert alert-success fade-in';
+            resultDiv.innerHTML = `<i class="fas fa-check me-2"></i>UID <strong>${data.uid}</strong> is <strong>NOT BANNED</strong>`;
+        }
+    } catch (error) {
+        resultDiv.className = 'alert alert-danger fade-in';
+        resultDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Error checking ban status';
+    }
+}
+
+function clearBanForm() {
+    document.getElementById('ban_data').value = '';
+    document.getElementById('ban_channel_id').value = 'default';
+    document.getElementById('global_ban').checked = false;
+    showAlert('Ban form cleared successfully!', 'info');
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show fade-in`;
+    alertDiv.innerHTML = `
+        <i class="fas fa-info-circle me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    const container = document.querySelector('.main-content');
+    container.insertBefore(alertDiv, container.firstChild);
+
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

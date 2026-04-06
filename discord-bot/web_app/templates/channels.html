@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Channel Management - Free Fire Guild Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1><i class="fas fa-hashtag"></i> Channel Management</h1>
+                <p class="lead">Manage guild data channels and permissions</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note about Discord Integration -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Note:</strong> Channel management requires Discord bot integration for actual channel operations.
+                This interface provides a preview of available commands.
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel Setup -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-cog"></i> Setup Guild Channel</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="channel_id" class="form-label">Channel ID</label>
+                            <input type="text" name="channel_id" id="channel_id" class="form-control"
+                                   placeholder="Enter Discord Channel ID">
+                            <div class="form-text">Right-click channel → Copy ID (requires Developer Mode)</div>
+                        </div>
+                        <button type="submit" name="setup_channel" class="btn btn-primary">
+                            <i class="fas fa-cog"></i> Setup Channel
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Channel Info -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Channel Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="info_channel_id" class="form-label">Channel ID</label>
+                            <input type="text" name="info_channel_id" id="info_channel_id" class="form-control"
+                                   placeholder="Enter Discord Channel ID">
+                            <div class="form-text">Get information about a guild channel</div>
+                        </div>
+                        <button type="submit" name="channel_info" class="btn btn-info">
+                            <i class="fas fa-info-circle"></i> Get Channel Info
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel Permissions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-shield-alt"></i> Channel Permissions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Channel permissions require Discord bot integration to manage actual permissions.
+                    </div>
+                    <p class="text-muted">Available Discord bot commands:</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><code>/setupchannel #channel</code> - Setup guild channel</li>
+                                <li><code>/channelinfo #channel</code> - Get channel information</li>
+                                <li><code>/setchannelpermissions #channel</code> - Set channel permissions</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><code>/lockchannel #channel</code> - Lock channel</li>
+                                <li><code>/unlockchannel #channel</code> - Unlock channel</li>
+                                <li><code>/archivechannel #channel</code> - Archive channel</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel List -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-list"></i> Guild Channels</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Channel list requires Discord bot integration to display actual guild channels.
+                    </div>
+                    <p class="text-muted">Use <code>/listchannels</code> in Discord to see all guild channels.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Operations -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-tasks"></i> Bulk Channel Operations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Bulk operations require Discord bot integration for actual execution.
+                    </div>
+                    <p class="text-muted">Available bulk commands:</p>
+                    <ul class="list-unstyled">
+                        <li><code>/setupallchannels</code> - Setup all guild channels</li>
+                        <li><code>/lockallchannels</code> - Lock all guild channels</li>
+                        <li><code>/unlockallchannels</code> - Unlock all guild channels</li>
+                        <li><code>/archiveallchannels</code> - Archive all inactive channels</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add any client-side validation if needed
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        const inputs = form.querySelectorAll('input[type="text"]');
+        let valid = true;
+
+        inputs.forEach(input => {
+            if (input.value.trim() === '') {
+                input.classList.add('is-invalid');
+                valid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        if (!valid) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+        }
+    });
+});
+</script>
+{% endblock %}
